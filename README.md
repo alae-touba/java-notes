@@ -1,4 +1,11 @@
 
+- [Java 9 Modules](#java-9-modules)
+  - [strong encapsulation](#strong-encapsulation)
+  - [better performance](#better-performance)
+  - [Reducing Application Size](#reducing-application-size)
+  - [Practical example of working with modules](#practical-example-of-working-with-modules)
+
+
 # Java 9 Modules
 
 A module is a self-contained unit of code that groups related **packages**, **resources**, and configuration. It is defined by a `module-info.java` file, which specifies:
@@ -117,7 +124,7 @@ Another benefit of modules is **Strong Encapsulation:** Modules have *explicit
 - **Prevents Accidental Dependencies:** You can't accidentally use internal JDK classes that were never intended for public use. This improves the long-term maintainability of your code.
 - **Improves Security:** By limiting the exposed surface area of the JDK, the attack surface is reduced.
 
-## **Reducing Application Size**
+## Reducing Application Size
 
 One of the most compelling advantages of adopting Java modules (introduced in Java 9) is the ability to **radically shrink the size of your deployed application runtime.** This is especially critical for developers distributing self-contained applications to end-users who may not have Java installed
 
