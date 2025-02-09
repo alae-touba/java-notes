@@ -4,6 +4,7 @@
   - [better performance](#better-performance)
   - [Reducing Application Size](#reducing-application-size)
   - [Practical example of working with modules](#practical-example-of-working-with-modules)
+- [Java 10 feature: JVM container awarness](#java-10-feature-jvm-container-awarness)
 
 
 # Java 9 Modules
@@ -315,3 +316,50 @@ java --module-path target -m com.example.app/com.example.app.MainApp
 - **`-m com.example.app/com.example.app.MainApp`** → Runs the `MainApp` class from the `com.example.app` module (notice the format **-m module/class**)
     - **`com.example.app`** → The module name.
     - **`com.example.app.MainApp`** → The fully qualified class name with `main` method.
+
+
+
+# Java 10 feature: JVM container awarness
+
+Java 10 introduced container awarness in the JVM, allowing it to detect that it being run inside a container and by that knowing the CPU and memory limits inside the container.
+
+Before Java 10, the JVM **ignored container limits** and assumed full access to the **host machine’s resources**. This led to:
+
+- **Excessive memory usage** → OOM (Out of Memory) errors.
+- **Inefficient CPU allocation** → JVM using all available cores, affecting performance.
+
+With **Java 10+,** the JVM correctly respects **container constraints** when running in a container.
+
+We can test this using java 9 and java 10.
+
+Lets run a container for jdk 9
+
+```bash
+docker container run -it --cpus=2 openjdk:9-jdk
+```
+
+we’ll have a jshell prompt because openjdk:9-jdk is configued to lanuch it by default when using interactive mode -it
+
+Now, run 
+
+```java
+jshell> Runtime.getRuntime().availableProcessors();
+$1 ==> 8
+```
+
+You see, 8, because the host machine has 8 cores, so JVM incorretly sees the host CPUs and not the container CPUs
+
+Now lets run an container instance of a jdk 10 image
+
+```bash
+docker container run -it --cpus=2 openjdk:10-jdk
+```
+
+Now run:
+
+```java
+shell> Runtime.getRuntime().availableProcessors();
+$1 ==> 2
+```
+
+JVM now correctly detects only 2 CPUs allocated for the container 🙂
